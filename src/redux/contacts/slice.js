@@ -18,6 +18,9 @@ export const contactsSlice = createSlice({
         state.items = actions.payload;
         state.isLoading = false;
       })
+      .addCase(getContacts.rejected, state => {
+        state.isLoading = false;
+      })
       .addCase(addContact.pending, state => {
         state.isLoading = true;
       })

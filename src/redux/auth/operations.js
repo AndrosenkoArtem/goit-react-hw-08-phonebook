@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { createAsyncThunk } from '@reduxjs/toolkit';
+import { toast } from 'react-toastify';
 
-axios.defaults.baseURL = 'https://connections-api.herokuapp.com/';
+axios.defaults.baseURL = 'https://phonebook-back-node-js.vercel.app/api/';
 
 const token = {
   addHeaderToken(token) {
@@ -15,10 +16,10 @@ export const register = createAsyncThunk(
   'auth/register',
   async (user, { rejectWithValue }) => {
     try {
-      const response = await axios.post('/users/signup', user);
-      token.addHeaderToken(response.data.token);
-      return response.data;
+      await axios.post('/users/signup', user);
+      toast.success('please confirm your email');
     } catch (error) {
+      toast.error('this email is already registered');
       return rejectWithValue(error.message);
     }
   }
@@ -29,8 +30,11 @@ export const login = createAsyncThunk(
     try {
       const response = await axios.post('/users/login', user);
       token.addHeaderToken(response.data.token);
-      return response.data;
+      const useer = await axios.get('/users/current');
+      return useer.data;
+      // return response.data;
     } catch (error) {
+      toast.error('The address or password was entered in error');
       return rejectWithValue(error.message);
     }
   }
@@ -58,6 +62,7 @@ export const refreshUser = createAsyncThunk(
     try {
       token.addHeaderToken(persistedToken);
       const res = await axios.get('/users/current');
+      console.log(res);
       return res.data;
     } catch (error) {
       return rejectWithValue(error.message);

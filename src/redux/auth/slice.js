@@ -15,9 +15,6 @@ export const authSlice = createSlice({
     builder
       .addCase(register.fulfilled, (state, actions) => {
         state.error = null;
-        state.isLoggedIn = true;
-        state.user = actions.payload.user;
-        state.token = actions.payload.token;
       })
       .addCase(register.rejected, (state, actions) => {
         state.error = actions.payload;
@@ -49,6 +46,7 @@ export const authSlice = createSlice({
         state.isRefreshing = false;
       })
       .addCase(refreshUser.rejected, (state, actions) => {
+        state.isRefreshing = false;
         state.error = actions.payload;
       }),
 });
